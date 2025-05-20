@@ -1,20 +1,19 @@
-
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Toaster } from "@/components/ui/toaster";
-import { Navbar } from '@/components/Navbar';
-import { Sidebar } from '@/components/Sidebar';
-import { Dashboard } from '@/components/Dashboard';
-import { Journal } from '@/components/Journal';
-import { JournalEntry } from '@/components/JournalEntry';
-import { NewJournalEntry } from '@/components/NewJournalEntry';
-import { UserProfile } from '@/components/UserProfile';
-import { CompanionChat } from '@/components/CompanionChat';
-import { Settings } from '@/components/Settings';
-import { Insights } from '@/components/Insights';
-import { AuthPage } from '@/components/AuthPage';
-import { supabase } from '@/integrations/supabase/client';
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "./components/ui/toaster";
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import Dashboard from './components/Dashboard';
+import Journal from './components/Journal';
+import JournalEntry from './components/JournalEntry';
+import NewJournalEntry from './components/NewJournalEntry';
+import UserProfile from './components/UserProfile';
+import CompanionChat from './components/CompanionChat';
+import Settings from './components/Settings';
+import Insights from './components/Insights';
+import AuthPage from './components/AuthPage';
+import { supabase } from './integrations/supabase/client';
+import { ThemeProvider } from "./components/ThemeProvider";
 
 // Layout component to handle sidebar toggling and responsive behavior
 const Layout = ({ children }: { children: React.ReactNode }) => {

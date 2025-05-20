@@ -1,18 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RecentJournals } from "@/components/RecentJournals";
-import { MoodOverTime } from "@/components/MoodOverTime";
-import { EmotionTags } from "@/components/EmotionTags";
-import { JournalPrompts } from "@/components/JournalPrompts";
-import { StartReflectionForm } from "@/components/StartReflectionForm";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "./ui/button";
+import { Card, CardContent } from "./ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { RecentJournals } from "./RecentJournals";
+import { MoodOverTime } from "./MoodOverTime";
+import { EmotionTags } from "./EmotionTags";
+import { JournalPrompts } from "./JournalPrompts";
+import { StartReflectionForm } from "./StartReflectionForm";
+import { Separator } from "./ui/separator";
 import { PenLine, BarChart3, BookOpen, MessageCircle } from "lucide-react";
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '../integrations/supabase/client';
+import { useToast } from "../hooks/use-toast";
 
 export const Dashboard = () => {
   const [welcomeVisible, setWelcomeVisible] = useState(false);
@@ -39,22 +39,31 @@ export const Dashboard = () => {
           .eq('id', session.user.id)
           .single();
         
-        if (profileError && profileError.code !== 'PGRST116') {
+        if (profileError) {
           console.error('Error fetching profile:', profileError);
-          throw profileError;
+          if (profileError.code !== 'PGRST116') {
+            throw profileError;
+          }
         }
         
-        setUserProfile(profileData);
-        
-        // Only show welcome if this is the user's first visit
-        if (profileData && profileData.first_visited === null || profileData.first_visited === undefined) {
-          setWelcomeVisible(true);
+        // Set profile data if available
+        if (profileData) {
+          setUserProfile(profileData);
           
-          // Update profile to mark that they've visited
-          await supabase
-            .from('profiles')
-            .update({ first_visited: true })
-            .eq('id', session.user.id);
+          // Check if this is the user's first visit
+          if (profileData.first_visited === null || profileData.first_visited === undefined) {
+            setWelcomeVisible(true);
+            
+            // Update profile to mark that they've visited
+            try {
+              await supabase
+                .from('profiles')
+                .update({ first_visited: true })
+                .eq('id', session.user.id);
+            } catch (updateError) {
+              console.error('Error updating first_visited flag:', updateError);
+            }
+          }
         }
       } catch (error) {
         console.error('Error in dashboard setup:', error);

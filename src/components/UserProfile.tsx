@@ -1,18 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Calendar } from "@/components/ui/calendar";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Separator } from "./ui/separator";
+import { Badge } from "./ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Switch } from "./ui/switch";
+import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import { Calendar } from "./ui/calendar";
+import { useToast } from "../hooks/use-toast";
+import { supabase } from '../integrations/supabase/client';
 
 interface UserSettings {
   user_id: string;
@@ -31,7 +31,7 @@ interface UserProfile {
   longest_streak: number;
   joined_date: string;
   last_entry_date: string | null;
-  bio: string | null;
+  bio?: string | null; // Added bio field
 }
 
 const defaultSettings: UserSettings = {

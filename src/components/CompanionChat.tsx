@@ -1,20 +1,21 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { ScrollArea } from "./ui/scroll-area";
 import { Send, ArrowLeft } from "lucide-react";
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/components/ui/use-toast';
+import { supabase } from '../integrations/supabase/client';
+import { useToast } from "../hooks/use-toast";
 
-type Message = {
+interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  timestamp: Date;
-};
+  timestamp: string;  // Changed from Date to string for JSON serialization
+}
 
+// Initialize with some predefined messages
 const initialBotMessages = [
   "Hello there! I'm your MirrorMind companion. How are you feeling today?",
   "I notice you seem thoughtful today. Would you like to talk about it?",
@@ -28,6 +29,7 @@ const initialBotMessages = [
   "It takes courage to look inward like this. What would be helpful for you right now?"
 ];
 
+// Different kinds of responses for variety
 const followUpResponses = [
   "That's really interesting. Can you tell me more about that?",
   "I understand. How did that make you feel?",
@@ -85,7 +87,7 @@ const CompanionChat: React.FC = () => {
           id: Date.now().toString(),
           role: 'assistant',
           content: randomGreeting,
-          timestamp: new Date()
+          timestamp: new Date().toISOString()
         }
       ]);
     }
@@ -109,7 +111,15 @@ const CompanionChat: React.FC = () => {
       if (error) throw error;
       
       if (data && data.length > 0 && data[0].messages) {
-        setMessages(data[0].messages as Message[]);
+        // Convert the JSON messages from the database to Message type
+        const storedMessages = data[0].messages as any[];
+        const typedMessages: Message[] = storedMessages.map(msg => ({
+          id: msg.id,
+          role: msg.role,
+          content: msg.content,
+          timestamp: msg.timestamp
+        }));
+        setMessages(typedMessages);
       }
     } catch (error) {
       console.error('Error loading conversation:', error);
@@ -121,9 +131,17 @@ const CompanionChat: React.FC = () => {
     
     try {
       const lastMessage = messages[messages.length - 1].content;
+      // Ensure messages are properly serialized for JSON storage
+      const serializedMessages = messages.map(msg => ({
+        id: msg.id,
+        role: msg.role,
+        content: msg.content,
+        timestamp: msg.timestamp
+      }));
+      
       await supabase.rpc('save_chat_conversation', {
         user_id_input: userId,
-        messages_input: messages,
+        messages_input: serializedMessages,
         last_message_input: lastMessage
       });
     } catch (error) {
@@ -182,7 +200,7 @@ const CompanionChat: React.FC = () => {
       id: Date.now().toString(),
       role: 'user' as const,
       content: input.trim(),
-      timestamp: new Date()
+      timestamp: new Date().toISOString()  // Store as ISO string for JSON serialization
     };
     
     setMessages(prev => [...prev, userMessage]);
@@ -199,7 +217,7 @@ const CompanionChat: React.FC = () => {
         id: (Date.now() + 1).toString(),
         role: 'assistant' as const,
         content: responseContent,
-        timestamp: new Date()
+        timestamp: new Date().toISOString()  // Store as ISO string for JSON serialization
       };
       
       setMessages(prev => [...prev, botResponse]);
