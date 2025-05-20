@@ -14,12 +14,25 @@ import { PenLine, BarChart3, BookOpen, MessageCircle } from "lucide-react";
 import { supabase } from '../integrations/supabase/client';
 import { useToast } from "../hooks/use-toast";
 
+// Define the profile type including the first_visited property
+interface UserProfile {
+  id: string;
+  name?: string | null;
+  avatar_url?: string | null;
+  current_streak?: number | null;
+  longest_streak?: number | null;
+  last_entry_date?: string | null;
+  intention?: string | null;
+  first_visited?: boolean | null;
+  bio?: string | null;
+}
+
 export const Dashboard = () => {
   const [welcomeVisible, setWelcomeVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [userProfile, setUserProfile] = useState<{ first_visited?: boolean } | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     const checkUserStatus = async () => {
@@ -35,7 +48,7 @@ export const Dashboard = () => {
         // Fetch user profile to check first_visited flag
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .select('id, first_visited')
+          .select('id, first_visited, bio')
           .eq('id', session.user.id)
           .single();
         

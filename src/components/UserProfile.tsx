@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -24,14 +23,16 @@ interface UserSettings {
 
 interface UserProfile {
   id: string;
-  name: string;
+  name: string | null;
   email: string;
   avatar_url: string | null;
-  current_streak: number;
-  longest_streak: number;
+  current_streak: number | null;
+  longest_streak: number | null;
   joined_date: string;
   last_entry_date: string | null;
-  bio?: string | null; // Added bio field
+  bio?: string | null;
+  first_visited?: boolean | null;
+  intention?: string | null;
 }
 
 const defaultSettings: UserSettings = {
