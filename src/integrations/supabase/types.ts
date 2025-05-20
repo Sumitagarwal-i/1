@@ -95,6 +95,7 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           current_streak: number | null
+          first_visited: boolean | null
           id: string
           intention: string | null
           last_entry_date: string | null
@@ -106,6 +107,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           current_streak?: number | null
+          first_visited?: boolean | null
           id: string
           intention?: string | null
           last_entry_date?: string | null
@@ -117,6 +119,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           current_streak?: number | null
+          first_visited?: boolean | null
           id?: string
           intention?: string | null
           last_entry_date?: string | null

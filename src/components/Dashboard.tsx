@@ -61,7 +61,7 @@ export const Dashboard = () => {
         
         // Set profile data if available
         if (profileData) {
-          setUserProfile(profileData);
+          setUserProfile(profileData as UserProfile);
           
           // Check if this is the user's first visit
           if (profileData.first_visited === null || profileData.first_visited === undefined) {
